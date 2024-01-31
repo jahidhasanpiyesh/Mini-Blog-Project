@@ -1,0 +1,25 @@
+{% extends "blogapp/base.html" %}
+{% load static %}
+{% block title %} signup {% endblock title %}
+{% block content %}
+<div class="col-sm-6 offset-3">
+    <h3 class="mt-5 text-center">CREATE NEW ACCOUNT</h3>
+    <form action="" method="post">
+        {% csrf_token %}
+        {% for forms in form %}
+        <div class="form-group">
+        {{forms.label_tag}} {{forms}} {{forms.errors | striptags}}
+        </div>
+        {% endfor %}
+        <input class="btn btn-primary my-3" type="submit" value="Sign Up">
+
+        {% if form.non_field_errors %}
+        {% for error in form.non_field_errors %}
+        <p>{{error}}</p>
+        {% endfor %}
+        {% endif %}
+
+    </form>
+</div>
+
+{% endblock content %}
