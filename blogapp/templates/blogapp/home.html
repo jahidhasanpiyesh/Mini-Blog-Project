@@ -5,19 +5,15 @@
 <div class="col-sm-10">
     <h3 class="my-5">Home Page</h3>
 
+    {% for posts in post %}
     {% comment %} bootstrap---jumbotron Use {% endcomment %}
     <div class="jumbotron jumbotron-fluid jumbo-color">
         <div class="container">
-          <h1 class="display-4 blog-title">This Is Blog Title</h1>
-            <p class="lead">
-                Lorem ipsum dolor sit amet consectetur
-                adipisicing elit. Esse ipsa inventore, fuga eius accusamus
-                dolorem impedit iusto quae nesciunt alias incidunt nulla rem 
-                quasi mollitia.
-            </p>
-
+          <h1 class="display-4 blog-title">{{posts.title}}</h1><br>
+            <p class="lead">{{posts.description}}</p>
         </div>
-    </div>
+    </div> <br><br>
+    {% endfor %}
 
 </div>
 
