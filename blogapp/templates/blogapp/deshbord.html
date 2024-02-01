@@ -10,10 +10,19 @@
         {% endif %}
         {% endblock msg %}
 
-</div>
+        {% block side %}
+        <div class="col-sm-2 text-white my-5 text-center ">
+            <h4 class= 'my-5'>Profile</h4>
+            <h5>{{name}}</h5>
+            {% for gp in group %}
+            {{gp.name}}
+            {% endfor %}
+        </div>
+        {% endblock side %}
+
 {% block content %}
-<div class="col-sm-10 offset-1">
-    <h3 class="my-3">Deshbord Page</h3>
+<div class="col-sm-10">
+    <h3 class="my-3">Blog Deshbord</h3>
     <a href="{% url 'addpost' %}" class="btn btn-success">Add Post</a>
     <h4 class="text-center alert alert-info mt-3">Show Post Informations</h4>
     {% if posts %}
@@ -34,15 +43,19 @@
                 <td>{{post.description}}</td>
                 <td class= 'text-center'>
                     <a href="{% url 'editpost' post.id %}" class= 'btn btn-warning btn-sm'>Edit</a>
+                    {% if perms.blogapp.delete_post %}
                     <form action="{% url 'deletepost' post.id %}" class='d-inline' method="post">
                         {% csrf_token %}
                         <input type="submit" class= 'btn btn-danger btn-sm' value="Delete">
                     </form>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %} <br>
         </tbody>
     </table>
+    {% else %}
+    <h3 class= 'alert alert-danger text-center'>Empty Post</h3>
     {% endif %}
 </div>
 

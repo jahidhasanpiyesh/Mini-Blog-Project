@@ -3,6 +3,7 @@ from .forms import Sign_Up_Forms, Login_Forms, User_Post_Forms
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from .models import Post
+from django.contrib.auth.models import Group
 
 # Create your views here.
 
@@ -23,7 +24,10 @@ def contact(request):
 def deshbord(request):
     if request.user.is_authenticated:
         posts = Post.objects.all()
-        return render(request, 'blogapp/deshbord.html',{'posts':posts})
+        user = request.user
+        full_name = user.get_full_name()
+        gps = user.groups.all()
+        return render(request, 'blogapp/deshbord.html',{'posts':posts,'name':full_name,'group':gps})
     else:
         return HttpResponseRedirect('/login/')
 
@@ -52,7 +56,9 @@ def user_signup(request):
         fm = Sign_Up_Forms(request.POST)
         if fm.is_valid():
             messages.success(request,"Thanks for signing up. Your account has been created !!")
-            fm.save()
+            user = fm.save()
+            group = Group.objects.get(name='Author')
+            user.groups.add(group)
             fm = Sign_Up_Forms()
     else:
         fm = Sign_Up_Forms()
