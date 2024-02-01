@@ -22,7 +22,8 @@ def contact(request):
 # Deshbord Base Functions ----
 def deshbord(request):
     if request.user.is_authenticated:
-        return render(request, 'blogapp/deshbord.html')
+        posts = Post.objects.all()
+        return render(request, 'blogapp/deshbord.html',{'posts':posts})
     else:
         return HttpResponseRedirect('/login/')
 
