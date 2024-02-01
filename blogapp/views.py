@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponseRedirect
-from .forms import Sign_Up_Forms, Login_Forms
+from .forms import Sign_Up_Forms, Login_Forms, User_Post_Forms
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from .models import Post
@@ -53,6 +53,7 @@ def user_signup(request):
         if fm.is_valid():
             messages.success(request,"Thanks for signing up. Your account has been created !!")
             fm.save()
+            fm = Sign_Up_Forms()
     else:
         fm = Sign_Up_Forms()
     return render(request, 'blogapp/signup.html', {'form': fm})
@@ -61,3 +62,50 @@ def user_signup(request):
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect('/')
+
+# Add New Post Base Functions
+def user_add_post(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            fm = User_Post_Forms(request.POST)
+            if fm.is_valid:
+                # T = fm.cleaned_data['title']
+                # D = fm.cleaned_data['description']
+                # pst = Post(title=T,description=D)
+                # pst.save()
+                messages.success(request,'Post Add Successfully !!')
+                fm.save()
+                fm = User_Post_Forms()
+        else:
+            fm = User_Post_Forms()             
+        return render(request,'blogapp/addpost.html',{'fm':fm})
+    else:
+        return HttpResponseRedirect('/login/')
+    
+    
+# Edit/update Post Base Functions
+def user_edit_post(request, id):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            pi = Post.objects.get(pk=id)
+            fm = User_Post_Forms(request.POST, instance=pi)
+            if fm.is_valid():
+                messages.success(request,'Post Edit Successfully !!')
+                fm.save()
+                fm=User_Post_Forms()
+        else:
+            pi = Post.objects.get(pk=id)
+            fm = User_Post_Forms(instance=pi)
+        return render(request,'blogapp/editpost.html',{'fm':fm})
+    else:
+        return HttpResponseRedirect('/login/')
+
+def user_delete_post(request, id):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            pi = Post.objects.get(pk=id)
+            messages.warning(request,'Post Delete Successfully !!')
+            pi.delete()
+            return HttpResponseRedirect('/deshbord/')
+    else:
+        return HttpResponseRedirect('/login/')
